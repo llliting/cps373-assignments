@@ -2,6 +2,8 @@
 #include <fstream>
 #include <iostream>
 
+using namespace std;
+
 void print_bakery(const Bakery& bakery) {
   std::cout << "Employees: " << std::endl;
   for (auto employee : bakery.employees) {
@@ -101,6 +103,36 @@ Bakery text_deserializer(std::string file_path) {
 
 // Implement these 3 functions!
 // Hint: use print_bakery to help think about the text serializer
-void text_serializer(const Bakery& bakery, std::string file_path);
+void text_serializer(const Bakery& bakery, std::string file_path){
+  ofstream myfile;
+  myfile.open (file_path);
+  myfile << "Employees: " << std::endl;
+  for (auto employee : bakery.employees) {
+    myfile << employee << std::endl;
+  }
+  myfile << std::endl;
+  myfile << "Items: " << std::endl;
+  for (auto item : bakery.items) {
+    myfile << item.name << ", " << item.price << std::endl;
+  }
+  myfile << std::endl;
+  myfile << "Orders: " << std::endl;
+  for (auto order : bakery.orders) {
+    myfile << order.employee << ": ";
+    auto j = 0;
+    for (auto item : order.items) {
+      myfile << item.second << " " << item.first;
+      j++;
+      if (size_t(j) < order.items.size())
+        myfile << ", ";
+    }
+    myfile << std::endl;
+  }
+  myfile.close();
+}
+
+
+
+
 Bakery binary_deserializer(std::string file_path);
 void binary_serializer(const Bakery& bakery, std::string file_path);

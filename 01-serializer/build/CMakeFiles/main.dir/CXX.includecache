@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/liting/Desktop/cps373-assignments/01-serializer/include/bakery.hpp
+string
+-
+unordered_map
+-
+vector
+-
+
+/Users/liting/Desktop/cps373-assignments/01-serializer/src/main.cpp
+chrono
+-
+iostream
+-
+../include/bakery.hpp
+/Users/liting/Desktop/cps373-assignments/01-serializer/include/bakery.hpp
+
