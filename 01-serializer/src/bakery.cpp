@@ -1,8 +1,12 @@
 #include "bakery.hpp"
 #include <fstream>
 #include <iostream>
+//#include <string>
+
 
 using namespace std;
+
+
 
 void print_bakery(const Bakery& bakery) {
   std::cout << "Employees: " << std::endl;
@@ -135,4 +139,60 @@ void text_serializer(const Bakery& bakery, std::string file_path){
 
 
 Bakery binary_deserializer(std::string file_path);
-void binary_serializer(const Bakery& bakery, std::string file_path);
+
+
+void binary_serializer(const Bakery& bakery, std::string file_path){
+  ofstream os(file_path, ios::out | ios::binary);
+  unordered_map<string, short> m;
+
+  //mapping the employees
+  char s[] = "Employees: \n";
+  os << s;
+  short i = 0;
+  //string s;
+  for (auto employee : bakery.employees) {
+    m[employee] = i;
+    os.write((char*)(&i), sizeof (short)); // the first two bytes (employee index)
+    os << employee; // employee's name
+    //os.write(reinterpret_cast<char*>(&employee), employee.length()); //
+    os << endl;
+    i++;
+  }
+  os << endl;
+
+
+  //mapping the items
+  char s1[] = "Items: \n";
+  os << s1;
+  for (auto item : bakery.items) {
+    i++;
+    m[item.name] = i;
+    os.write((char*)(&i), sizeof (short)); // the first two bytes (item index)
+    os.write(reinterpret_cast<char*>(&item), sizeof(Item));
+    os << endl;
+  }
+  os << endl;
+
+  //writing orders
+  char s2[] = "Items: \n";
+  os << s2;
+
+  for (auto order : bakery.orders) {
+    short idx = m[order.employee];
+    os.write((char*)(&idx), sizeof (short));//first two bytes -- employee index 
+
+    
+    
+    auto j = 0;
+    for (auto item : order.items) {
+      short amount = (short)stoi(item.second); 
+      os.write((char*)(&amount), sizeof (short));
+      os.write((char*)(&(m[item.first])), sizeof (short));//next two bytes -- item name 
+      //s += item.second + " " + item.first;
+      j++;
+    }
+    os << endl;
+  }
+
+  os.close();
+}
