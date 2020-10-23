@@ -12,6 +12,7 @@ set(CLIENT_FILES
 
 set(SERVER_FILES
   src/server.cpp
+  src/bakery.cpp
 )
 
 add_executable(client ${CLIENT_FILES})
