@@ -139,82 +139,82 @@ void text_serializer(const Bakery& bakery, std::string file_path){
 
 
 Bakery binary_deserializer(std::string file_path){
-  ifstream rf(file_path, ios::out | ios::binary);
+  ifstream rf(file_path, ifstream::binary);  
   string line;
-  unordered_map<string, short> m;
+  unordered_map<short, string> m;
   Bakery bakery;
 
 
   while (!rf.eof()) {
     // Employees section
     getline(rf, line);
-    short i;
+    short i = 0;
     if (line.compare("Employees: ") == 0) {
-      int j = 0;
-      while (line.size()>0 and j <=2) {
-        rf.read((char *) &i, sizeof(short));
-        getline(rf, line);
-        m[line] = i;
-        //cout << line << " " << i << endl;
-        //cout << (short)line[1] << endl;
+      while (true) {
+        getline(rf, line); 
+        if(line.size()==0)
+          break;
+        m[i] = line;
         bakery.employees.push_back(line);
-        j++;
+        i++;
       }
     }
 
+
+
+/*
     // Items section
     if (line.compare("Items: ") == 0) {
-      int j = 0;
-      //while (line.size() > 0) {
-      while (j <= 4){
-        j++;
-        rf.read((char *) &i, sizeof(short));
-        cout << i << endl;
+      while (true){
+        
+        
+        //cout << line.size() << "SIZE" << endl;
+        if(line.size()==0)
+          break;
+        string na;
+        string pr;
         Item item;
-        rf.read(reinterpret_cast<char*>(&item), sizeof(Item));
+        rf.read(reinterpret_cast<char*>(&na), 11);
+        rf.read(reinterpret_cast<char*>(&pr), 5);
+        item.name = na;
+        item.price = pr;
         bakery.items.push_back(item);
-        m[item.name] = i;
-        getline(rf,line);
-        //std::getline(infile, line);
+        m[i] = item.name;
+        cout << na << ": " << pr << endl;
+        getline(rf, line); 
+        //cout <<  line << endl;
       }
     }
+ */
+
 
     // Orders section
-    if (line.compare("Orders") == 0) {
-      std::getline(infile, line);
-      auto e = bakery.employees;
-      while (line.size() > 0) {
+    if (line.compare("Orders: ") == 0) {
+      while (true) {
+        if(line.size()==0)
+          break;
         Order order;
-        auto end = line.find(": ");
-        order.employee = line.substr(0, end);
-
-        // Find all the orders
-        auto rest = line.substr(end + 2);
-        size_t pos = 0;
-        std::string token;
-        while ((pos = rest.find(", ")) != std::string::npos) {
-          token = rest.substr(0, pos);
-          end = token.find(" ");
-          auto quantity = token.substr(0, end);
-          auto item_name = token.substr(end + 1);
-          order.items.push_back(std::make_pair(item_name, quantity));
-          rest.erase(0, pos + 2);
-        }
-        end = rest.find(" ");
-        auto quantity = rest.substr(0, end);
-        auto item_name = rest.substr(end + 1);
+        short emp; 
+        rf.read(reinterpret_cast<char*>(&emp), 2);
+        cout << emp << " " << m[emp] <<  endl;
+        
+        
+        order.employee = m[emp];
+        
+        
+        auto quantity = token.substr(0, end);
+        auto item_name = token.substr(end + 1);
         order.items.push_back(std::make_pair(item_name, quantity));
-        bakery.orders.push_back(order);
 
-        // no more lines to read
-        if (infile.eof())
+        getline(rf, line); 
+        if (rf.eof())
           break;
 
-        std::getline(infile, line);
+        //std::getline(rf, line);
       }
     }
 
-    
+  
   }
 
   return bakery;
@@ -228,31 +228,29 @@ Bakery binary_deserializer(std::string file_path){
 
 
 void binary_serializer(const Bakery& bakery, std::string file_path){
-  ofstream os(file_path, ios::out | ios::binary);
+  ofstream os(file_path, ofstream::binary);
   unordered_map<string, short> m;
   //mapping the employees
-  char s[] = "Employees: \n";
-  os << s;
+  //char s[] = "Employees: \n";
+  os << "Employees: \n";
   short i = 0;
   //string s;
   for (auto employee : bakery.employees) {
     m[employee] = i;
-    os.write((char*)(&i), sizeof (short)); // the first two bytes (employee index)
     os << employee; // employee's name
-    //os.write(reinterpret_cast<char*>(&employee), employee.length()); //
     os << endl;
     i++;
   }
   os << endl;
   //mapping the items
-  char s1[] = "Items: \n";
-  os << s1;
+  os << "Items: \n";
   for (auto item : bakery.items) {
-    
     m[item.name] = i;
-    //cout << i << " " << endl;
-    os.write((char*)(&i), sizeof (short)); // the first two bytes (item index)
-    os.write(reinterpret_cast<char*>(&item), sizeof(Item));
+    string n = item.name;
+    string p = item.price;
+    os.write(reinterpret_cast<char*>(&n),11);
+    os.write(reinterpret_cast<char*>(&p), 5);
+    //os.write(reinterpret_cast<char*>(&item), sizeof(Item));
     os << endl;
     i++;
   }
