@@ -144,7 +144,7 @@ Bakery binary_deserializer(std::string file_path){
   unordered_map<short, string> m;
   Bakery bakery;
 
-
+  
   while (!rf.eof()) {
     // Employees section
     getline(rf, line);
@@ -160,62 +160,66 @@ Bakery binary_deserializer(std::string file_path){
       }
     }
 
-
-
-/*
     // Items section
     if (line.compare("Items: ") == 0) {
-      while (true){
-        
-        
-        //cout << line.size() << "SIZE" << endl;
-        if(line.size()==0)
-          break;
-        string na;
-        string pr;
+      getline(rf, line); 
+      while (line.size()!=0){
         Item item;
-        rf.read(reinterpret_cast<char*>(&na), 11);
-        rf.read(reinterpret_cast<char*>(&pr), 5);
-        item.name = na;
-        item.price = pr;
+        string name, price;
+        int i = 0;
+        for(; i < 11; i ++)
+          name += line[i];
+        for(int j = 0; j < 5; j ++){
+          i++;
+          price += line[i];
+        }
+        //cout << "name: " << name << " price: " << price << endl;
+        item.name = name;
+        item.price = price;
         bakery.items.push_back(item);
         m[i] = item.name;
-        cout << na << ": " << pr << endl;
         getline(rf, line); 
-        //cout <<  line << endl;
       }
     }
- */
+
 
 
     // Orders section
     if (line.compare("Orders: ") == 0) {
-      while (true) {
-        if(line.size()==0)
-          break;
+      getline(rf, line); 
+      while (line.size()!=0){
         Order order;
-        short emp; 
-        rf.read(reinterpret_cast<char*>(&emp), 2);
-        cout << emp << " " << m[emp] <<  endl;
-        
-        
-        order.employee = m[emp];
-        
-        
-        auto quantity = token.substr(0, end);
-        auto item_name = token.substr(end + 1);
-        order.items.push_back(std::make_pair(item_name, quantity));
+        string employee = "";
+        employee += line[0] + line[1];
+        cout << line << endl;
+        cout << "employee: " << employee << endl; 
+        //short emp = (short)stoi(employee);
 
-        getline(rf, line); 
+        //for(int i = 0; i < line.size(); i ++){
+
+        //}
+        //rf.read(reinterpret_cast<char*>(&emp), 2);
+        //cout << emp << " " << m[emp] <<  endl;
+        
+        
+        // order.employee = m[emp];
+        
+        
+        // auto quantity = token.substr(0, end);
+        // auto item_name = token.substr(end + 1);
+        // order.items.push_back(std::make_pair(item_name, quantity));
+
+
+        //getline(rf, line); 
         if (rf.eof())
           break;
 
-        //std::getline(rf, line);
+        getline(rf, line);
       }
     }
 
-  
   }
+  //}
 
   return bakery;
 
