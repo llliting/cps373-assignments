@@ -159,25 +159,28 @@ Bakery binary_deserializer(std::string file_path){
         i++;
       }
     }
-
+  
     // Items section
     if (line.compare("Items: ") == 0) {
+      short i = 3;
       getline(rf, line); 
       while (line.size()!=0){
         Item item;
         string name, price;
-        int i = 0;
-        for(; i < 11; i ++)
-          name += line[i];
+        int k = 0;
+        for(; k < 11; k ++)
+          name += line[k];
         for(int j = 0; j < 5; j ++){
-          i++;
-          price += line[i];
+          k++;
+          price += line[k];
         }
         //cout << "name: " << name << " price: " << price << endl;
         item.name = name;
         item.price = price;
         bakery.items.push_back(item);
         m[i] = item.name;
+        //cout << "i:" << i << item.name << endl;
+        i++;
         getline(rf, line); 
       }
     }
@@ -186,34 +189,26 @@ Bakery binary_deserializer(std::string file_path){
 
     // Orders section
     if (line.compare("Orders: ") == 0) {
-      getline(rf, line); 
-      while (line.size()!=0){
+      long num;
+      rf.read(reinterpret_cast<char*>(&num), sizeof(long));
+      for(int k = 0; k < num; k ++){
         Order order;
-        string employee = "";
-        employee += line[0] + line[1];
-        cout << line << endl;
-        cout << "employee: " << employee << endl; 
-        //short emp = (short)stoi(employee);
-
-        //for(int i = 0; i < line.size(); i ++){
-
-        //}
-        //rf.read(reinterpret_cast<char*>(&emp), 2);
-        //cout << emp << " " << m[emp] <<  endl;
-        
-        
-        // order.employee = m[emp];
-        
-        
-        // auto quantity = token.substr(0, end);
-        // auto item_name = token.substr(end + 1);
-        // order.items.push_back(std::make_pair(item_name, quantity));
-
-
-        //getline(rf, line); 
+        short sz;
+        short emp;
+        rf.read(reinterpret_cast<char*>(&sz), 2);
+        rf.read(reinterpret_cast<char*>(&emp), 2);
+        order.employee = m[emp];
+        //cout << emp << " " << m[emp] << " " << "length:" << line.length();
+        short quant;
+        short item;
+        for(int i = 0; i < sz; i++){
+          rf.read(reinterpret_cast<char*>(&quant), 2);
+          rf.read(reinterpret_cast<char*>(&item), 2);
+          order.items.push_back(std::make_pair(m[item], to_string(quant)));
+        }
+        bakery.orders.push_back(order);
         if (rf.eof())
           break;
-
         getline(rf, line);
       }
     }
@@ -262,9 +257,15 @@ void binary_serializer(const Bakery& bakery, std::string file_path){
   //writing orders
   char s2[] = "Orders: \n";
   os << s2;
+  long num = bakery.orders.size();
+  os.write((char*)(&num), sizeof (long));
+  
   for (auto order : bakery.orders) {
     short idx = m[order.employee];
+    short s = (short)order.items.size();
+    os.write((char*)(&s), sizeof (short));
     os.write((char*)(&idx), sizeof (short));//first two bytes -- employee index 
+    
     for (auto item : order.items) {
       short amount = (short)stoi(item.second); 
       os.write((char*)(&amount), sizeof (short));//first two bytes -- item amount 
