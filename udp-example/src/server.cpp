@@ -19,6 +19,9 @@ int main() {
     socket.receive_from(asio::buffer(empty), remote_endpoint);
     socket.send_to(asio::buffer(counter), remote_endpoint, 0, error);
     std::cout << std::to_string(counter[0]) << std::endl;
+    if (counter[0] == 255) {
+      break;
+    }
     counter[0] += 1;
   }
 
