@@ -15,6 +15,13 @@ int main() {
   // Use this bakery to handle queries from the client
   Bakery bakery = text_deserializer("../data/bakery.txt");
 
+
+  int msg;
+  if (msg == 0){
+    return bakery.items;
+  }
+
+
   uint16_t counter = 0;
 
   while (true) {

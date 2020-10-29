@@ -1,0 +1,4 @@
+/Users/liting/Desktop/cps373-assignments/02-sockets/build/CMakeFiles/rebuild_cache.dir
+/Users/liting/Desktop/cps373-assignments/02-sockets/build/CMakeFiles/edit_cache.dir
+/Users/liting/Desktop/cps373-assignments/02-sockets/build/CMakeFiles/server.dir
+/Users/liting/Desktop/cps373-assignments/02-sockets/build/CMakeFiles/client.dir
