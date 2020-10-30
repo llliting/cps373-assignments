@@ -8,6 +8,13 @@
 
 using asio::ip::tcp;
 
+
+// std::array<uint8_t, 2> respon(std::array<uint8_t, 3> buf){
+//   uint8_t commmand = buf[]
+// }
+
+
+
 int main() {
   asio::io_context io_context;
   tcp::acceptor acceptor(io_context, tcp::endpoint(tcp::v4(), 3000));
@@ -16,11 +23,7 @@ int main() {
   Bakery bakery = text_deserializer("../data/bakery.txt");
 
 
-  int msg;
-  if (msg == 0){
-    return bakery.items;
-  }
-
+  
 
   uint16_t counter = 0;
 
@@ -39,6 +42,10 @@ int main() {
     //   throw asio::system_error(error);
 
     // Add x to counter
+
+
+
+
     auto x = uint8_t(buf[0]);
     counter += x;
     std::cout << +x << " " << counter << std::endl;

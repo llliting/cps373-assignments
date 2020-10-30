@@ -9008,14 +9008,6 @@ asio/detail/pop_options.hpp
 asio/impl/write_at.hpp
 ../third_party/asio-1.18.0/include/asio/asio/impl/write_at.hpp
 
-/Users/liting/Desktop/cps373-assignments/02-sockets/src/bakery.cpp
-bakery.hpp
-/Users/liting/Desktop/cps373-assignments/02-sockets/src/bakery.hpp
-fstream
--
-iostream
--
-
 /Users/liting/Desktop/cps373-assignments/02-sockets/src/server.cpp
 inttypes.h
 -
