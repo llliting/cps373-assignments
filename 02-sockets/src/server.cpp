@@ -9,9 +9,85 @@
 using asio::ip::tcp;
 
 
-// std::array<uint8_t, 2> respon(std::array<uint8_t, 3> buf){
-//   uint8_t commmand = buf[]
-// }
+std::array<uint8_t, 2> respon(std::array<uint8_t, 3> buf, Bakery& bakery){
+  std::array<uint8_t, 2> res;
+  uint8_t command = buf[0]>>6;
+  unit8_t e =buf[0]&0b00110000;
+  std::string emp;
+  if(e == 0b00)
+    emp = "Brad";
+  else if(e == 0b01)
+    emp = "Claudia";
+  else if(e == 0b10)  
+    emp = "Simone";
+
+
+  //get total number of orders 
+  if(command == 0b00){
+    if(bakery.orders.size() <= 511) {
+      res[1] = bakery.orders.size();
+    }
+    else{
+      uint16_t temp = bakery.orders.size();
+      res[1] = 0b11111111;
+      res[0] = (unit8_t)temp>>8;
+    }
+  }
+  
+  //get number of orders for employee
+  else if(command == 0b01){
+    int counter = 0;
+    for(Order o : bakery.orders){
+      if(o.employee == emp)
+        counter ++;
+    }
+    if(counter <= 511) {
+      res[1] = bakery.orders.size();
+    }
+    else{
+      uint16_t temp = counter;
+      res[1] = 0b11111111;
+      res[0] = (unit8_t)temp>>8;
+    }
+  }
+
+  //add an order 
+  else if(command == 0b10){
+    Order neworder;
+    neworder.employee = emp;
+
+    auto quantity = buf[0] & 00001111;
+    if(quantity!=0)
+      neworder.items.push_back(std::make_pair("Biscuit", quantity));
+
+    quantity = buf[1] >> 4;
+    if(quantity!=0)
+      neworder.items.push_back(std::make_pair("Bun", quantity));
+      
+
+    quantity = buf[1] & 0b00001111;
+    if(quantity!=0)
+      neworder.items.push_back(std::make_pair("Brownie", quantity));
+      
+    quantity = buf[2] >> 4;
+    if(quantity!=0)
+      neworder.items.push_back(std::make_pair("White Loaf", quantity));
+
+    quantity = buf[2] & 0b00001111;
+    if(quantity!=0)
+      neworder.items.push_back(std::make_pair("Wheat Loaf", quantity));
+
+    bakery.orders.push_back(neworder);
+    res[0] = 0;
+    res[1] = 0;
+  }
+
+  else{//unused
+    res[0] = 0;
+    res[1] = 0;
+  }
+  return res;
+}
 
 
 
@@ -23,38 +99,19 @@ int main() {
   Bakery bakery = text_deserializer("../data/bakery.txt");
 
 
-  
-
-  uint16_t counter = 0;
-
   while (true) {
     // Wait for client
     std::cout << "Blocked for read" << std::endl;
     tcp::socket socket(io_context);
     acceptor.accept(socket);
-
     std::array<uint8_t, 3> buf;
     asio::error_code error;
     size_t len = socket.read_some(asio::buffer(buf), error);
-
     // Example of error handling
     // if (error != asio::error::eof)
     //   throw asio::system_error(error);
-
-    // Add x to counter
-
-
-
-
-    auto x = uint8_t(buf[0]);
-    counter += x;
-    std::cout << +x << " " << counter << std::endl;
-
-    buf.fill(0);
-
-    std::memcpy(&buf, &counter, sizeof(uint16_t));
-
-    asio::write(socket, asio::buffer(buf), error);
+    std::array<uint8_t, 2> resp = respon(buf, bakery);
+    asio::write(socket, asio::buffer(resp), error);
   }
 
   return 0;

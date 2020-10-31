@@ -42,7 +42,7 @@ int main() {
 
   //Get the total number of orders
   buf.fill(0);
-  buf[2] = 0b00110000;
+  buf[0] = 0b00110000;
   asio::write(socket, asio::buffer(buf), error);
   len = socket.read_some(asio::buffer(buf), error);
   response = *reinterpret_cast<uint16_t*>(&buf.data()[0]);
