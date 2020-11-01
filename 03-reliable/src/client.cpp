@@ -34,19 +34,8 @@ int main() {
       // Eventually, you will combine these chunks to write the file
       auto data_str = std::string(msg.data.data(), CHUNK_SIZE);
 
-      // Print the msg id recieved (note these will be out of order due
-      //  to random delays)
-      std::cout << msg.msg_id << std::endl;
-
-      // Request another msg
-      sender.request_msg(curr_msg);
-      curr_msg++;
-
-      // Make sure not to request past message limit (NUM_MSGS)
-      if (curr_msg == NUM_MSGS) {
-        std::cout << "Sen!" << std::endl;
-        break;
-      }
+      // Print the msg id and message recieved (may be out of order)
+      std::cout << "msg_id(" << msg.msg_id << ")::" << data_str << std::endl;
     }
   }
 
