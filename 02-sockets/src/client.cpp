@@ -14,6 +14,7 @@ int main() {
   asio::error_code error;
   std::array<uint8_t, 3> buf;
   
+  
   // get the number of orders for claudia
   buf.fill(0);
   buf[0] = 0b01010000;
