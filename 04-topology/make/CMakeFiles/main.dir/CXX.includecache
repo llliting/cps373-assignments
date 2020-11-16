@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/liting/Desktop/cps373-assignments/04-topology/include/manager.hpp
+vector
+-
+../include/router.hpp
+/Users/liting/Desktop/cps373-assignments/04-topology/include/router.hpp
+
+/Users/liting/Desktop/cps373-assignments/04-topology/include/router.hpp
+chrono
+-
+queue
+-
+unordered_map
+-
+
+/Users/liting/Desktop/cps373-assignments/04-topology/src/main.cpp
+chrono
+-
+fstream
+-
+iostream
+-
+../include/manager.hpp
+/Users/liting/Desktop/cps373-assignments/04-topology/include/manager.hpp
+../include/router.hpp
+/Users/liting/Desktop/cps373-assignments/04-topology/include/router.hpp
+

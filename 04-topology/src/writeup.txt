@@ -1,0 +1,25 @@
+Client-Server Topology:
+The first topology is comparatively easy. For the first message (R2 to R1), 
+we go to the forwarding table for R2 and find the destination R1, the next hop is exactly R1,
+so it takes 1000ms for this message. Similarily for the the other two messages(R5 to r1/ R4 to R1),
+R1 is the first and the last hop for given destination. The latency between our starting hops and R1
+should be our total latency, which is 1000ms. This corresponds to our timing result: 1003 message.
+
+Ring Topology 
+For the first message (R1 to R3), using our forwarding table, we can see that R2 is the first hop from 
+R1 to R3, then we go to R2, and we see that the next hop for destination R3 is R3. Therefore, it takes 
+the latency between R1 and R2, and R2 and R3 to deliever message from R1 to R3, which is 200ms. As for 
+the second message (R8 to R4), we use the same approach, continuously finding hops to destination R4.
+We find R1 for R8, R2 for R1, R3 for R2, and R4 for R3. In total this takes 400ms latency. For the last 
+message, by looking up our forwarding table, we have R5 for R6, R4 for R5, R3 for R4, R2 for R3, R1 for 
+R2, R8 for R1, and R7 for R8. In total, the latency is 700 ms. The timing result is 802 ms, which is 
+very close to the calculated 700ms. We may assume the 102ms comes from queue processing times.
+
+Complex Network 
+For the first message (R8 to R6), we find the hops for the destination R6. For r8, we have R9, and then
+for R9, we have R6. The total latency for the first message is 600ms. Then as for the second message 
+(R1 to R9), we find R5 for R1 with destination r9, R6 for R5, and R9 for R6. The total latency for this 
+message is 2000ms. Lastly, for the third message (R4 to R5), in our forwarding table, we have R7 for R4 
+with destination R5. Then we go to R7 and find R2; we go to R2 and find R1; and for R1, we have R5 as 
+the next hop for destination R5. The total latency for this message is 2300ms, which is close to our 
+timing result 2403 ms. Same as above, we want to attribute the additional 103ms to queue processing times. 
